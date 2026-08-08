@@ -1,0 +1,82 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*.idea/
+.vscode/
+*.code-workspace
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+coverage.xml
+htmlcov/
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+pip-wheel-metadata/
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.venv*/
+backend/.venv*/
+backend/env/
+backend/ENV/
+
+# Backend uploads and runtime files
+backend/uploads/
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+
+# Node / frontend
+frontend/node_modules/
+frontend/build/
+frontend/.cache/
+frontend/.parcel-cache/
+frontend/coverage/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Frontend environment
+frontend/.env
+frontend/.env.*
+
+# VS Code workspace
+.vscode/
+
+# OS generated files
+*.DS_Store
+*.AppleDouble
+.LSOverride
+Icon
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Exclude lockfiles only if not using them intentionally
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
