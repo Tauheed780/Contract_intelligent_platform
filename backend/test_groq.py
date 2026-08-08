@@ -17,11 +17,11 @@ def test_groq():
             temperature=0.1,
             max_tokens=10
         )
-        print("✅ Groq is working!")
+        print("Groq is working!")
         print(f"Response: {response.choices[0].message.content}")
         return True
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         return False
 
 if __name__ == "__main__":

@@ -6,9 +6,21 @@ import asyncio
 
 class LLMService:
     def __init__(self):
-        self.client = groq.Groq(api_key=settings.groq_api_key)
+        self.client = None
         self.model = settings.groq_model
-        
+        self.is_available = bool(settings.groq_api_key)
+
+        if self.is_available:
+            try:
+                self.client = groq.Groq(api_key=settings.groq_api_key)
+            except Exception:
+                self.client = None
+                self.is_available = False
+
+    def _ensure_client(self):
+        if not self.client:
+            raise RuntimeError("Groq API key is not configured. Set GROQ_API_KEY in the backend .env file to enable AI features.")
+
     async def generate_summary(self, contract_text: str) -> Dict[str, Any]:
         """Generate a comprehensive contract summary using Groq"""
         prompt = f"""
@@ -28,6 +40,8 @@ class LLMService:
         main_purpose, key_parties, core_obligations, key_dates, payment_terms, duration, critical_clauses
         """
         
+        self._ensure_client()
+
         try:
             # Groq uses synchronous calls, so we wrap in async
             response = await asyncio.to_thread(
@@ -88,6 +102,8 @@ class LLMService:
         
         Return ONLY valid JSON array. Do not include any other text.
         """
+
+        self._ensure_client()
         
         try:
             response = await asyncio.to_thread(
@@ -139,6 +155,8 @@ class LLMService:
         
         Return ONLY valid JSON array. Do not include any other text.
         """
+
+        self._ensure_client()
         
         try:
             response = await asyncio.to_thread(
@@ -192,6 +210,8 @@ class LLMService:
             "sources": ["section references or quotes"]
         }}
         """
+
+        self._ensure_client()
         
         try:
             response = await asyncio.to_thread(

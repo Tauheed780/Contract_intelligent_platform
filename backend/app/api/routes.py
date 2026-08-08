@@ -51,6 +51,9 @@ async def upload_contract(file: UploadFile = File(...)):
             status="completed"
         )
         
+    except HTTPException:
+        # Preserve expected client errors, such as an unsupported file type.
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -98,6 +101,9 @@ async def ask_question(request: QuestionRequest):
             timestamp=answer_data["timestamp"]
         )
         
+    except HTTPException:
+        # Preserve validation errors raised above instead of turning them into 500s.
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
