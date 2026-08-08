@@ -1,35 +1,112 @@
-# Contract Analyser - Frontend
+# Frontend README
 
-A modern React-based frontend for the Contract Analyser system, providing an intuitive interface for uploading, analysing, and querying legal contracts using AI.
+This frontend provides the user interface for the Contract Analyzer app. It allows users to upload contract PDFs, view AI-generated analysis, and ask questions about the document.
 
-## Features
+## Overview
 
-- 📄 **PDF Upload**: Drag-and-drop or click to upload PDF contracts
-- 🤖 **AI Analysis**: Automated contract analysis with LLM
-- 📊 **Comprehensive Dashboard**: View summary, clause checklist, and risk flags
-- 💬 **Interactive Q&A**: Ask questions about your contract and get grounded answers
-- 📱 **Responsive Design**: Works on desktop and mobile devices
-- 🎨 **Modern UI**: Built with Tailwind CSS and Lucide icons
+The app is built with React and includes:
+
+- A contract upload workflow
+- Analysis tabs for summary, clause review, and risk flags
+- A Q&A section for document-based conversations
+- Toast notifications and a responsive layout
 
 ## Tech Stack
 
 - React 18
-- Tailwind CSS 3
-- Axios for API calls
-- React Dropzone for file upload
-- Lucide React for icons
-- React Hot Toast for notifications
-- Framer Motion for animations
+- React Router DOM
+- Tailwind CSS
+- Axios
+- React Dropzone
+- Lucide React
+- React Hot Toast
+- Framer Motion
+- Date-fns
+
+## Project Structure
+
+```text
+frontend/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── Analysis/
+│   │   │   ├── ClauseChecklist.js
+│   │   │   ├── ContractAnalysis.js
+│   │   │   ├── RiskFlags.js
+│   │   │   └── SummarySection.js
+│   │   ├── Layout/
+│   │   │   ├── Footer.js
+│   │   │   └── Navbar.js
+│   │   ├── Q&A/
+│   │   │   └── QASection.js
+│   │   └── Upload/
+│   │       ├── FileUpload.js
+│   │       └── UploadProgress.js
+│   ├── context/
+│   │   └── AppContext.js
+│   ├── services/
+│   │   ├── api.js
+│   │   └── contractService.js
+│   ├── utils/
+│   │   ├── helpers.js
+│   │   └── validators.js
+│   ├── App.js
+│   ├── index.css
+│   └── index.js
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+└── README.md
+```
 
 ## Prerequisites
 
-- Node.js (v16 or higher)
+Before running the frontend, make sure you have:
+
+- Node.js 18+
 - npm or yarn
-- Backend server running (see backend documentation)
+- The backend running at http://localhost:8000
 
 ## Installation
 
-1. Clone the repository:
+From the project root:
+
 ```bash
-git clone <repository-url>
-cd contract-analyser-frontend
+cd frontend
+npm install
+```
+
+## Development Server
+
+Start the React app:
+
+```bash
+npm start
+```
+
+The app should open at:
+
+- http://localhost:3000
+
+## Environment Notes
+
+The frontend is configured with a proxy to the backend:
+
+```json
+"proxy": "http://localhost:8000"
+```
+
+## Usage Flow
+
+1. Start the backend API
+2. Launch the frontend
+3. Upload a contract PDF
+4. Review the generated analysis
+5. Ask questions in the Q&A section
+
+## Notes
+
+- The UI expects analysis data from the backend before enabling the analysis and Q&A tabs.
+- Make sure the backend is running and reachable before using the app.
