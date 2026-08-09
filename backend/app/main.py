@@ -4,6 +4,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.api.routes import router
 from app.core.config import settings
 import logging
+import os
 
 logging.basicConfig(
     level=logging.INFO,
