@@ -1,36 +1,41 @@
-// src/services/api.js
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL_PROD || 'http://localhost:8000/api/v1';
+// Use environment variable for API URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+
+console.log('🔗 API Base URL:', API_BASE_URL); // Debug log
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000,
+  timeout: 120000, // Increased timeout for file upload
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor
+// Request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
-    // Add token if needed
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    console.log(`🚀 API Request: ${config.method.toUpperCase()} ${config.url}`);
+    console.log('📦 Request Data:', config.data);
     return config;
   },
   (error) => {
+    console.error('❌ Request Error:', error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`✅ API Response: ${response.status} ${response.config.url}`);
+    return response;
+  },
   (error) => {
+    console.error('❌ API Error:', error);
+    
     if (error.response) {
       // Server responded with error
       const message = error.response.data?.detail || error.response.data?.message || 'An error occurred';

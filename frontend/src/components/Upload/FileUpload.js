@@ -1,7 +1,6 @@
-// src/components/Upload/FileUpload.js
 import React, { useState, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, File, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, File, X, CheckCircle, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { uploadContract, getAnalysis } from '../../services/contractService';
 import { AppContext } from '../../context/AppContext';
@@ -11,7 +10,7 @@ const FileUpload = () => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [status, setStatus] = useState('idle'); // idle, uploading, processing, complete, error
+  const [status, setStatus] = useState('idle');
   
   const { setAnalysisResult, setFileId } = useContext(AppContext);
 
@@ -22,6 +21,7 @@ const FileUpload = () => {
         toast.error('File size must be less than 10MB');
         return;
       }
+      console.log('📄 File selected:', selectedFile.name, selectedFile.size);
       setFile(selectedFile);
       setStatus('idle');
       setProgress(0);
@@ -44,22 +44,25 @@ const FileUpload = () => {
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      toast.error('Please select a file first');
+      return;
+    }
 
     setUploading(true);
     setStatus('uploading');
     setProgress(10);
 
     try {
-      // Upload file
+      console.log('🚀 Starting upload...');
       const uploadResult = await uploadContract(file);
+      console.log('✅ Upload response:', uploadResult);
+      
       setProgress(50);
       
-      // Get file_id
       const fileId = uploadResult.file_id;
       setFileId(fileId);
       
-      // Poll for analysis completion
       setStatus('processing');
       setProgress(70);
       
@@ -69,18 +72,21 @@ const FileUpload = () => {
       
       while (attempts < maxAttempts) {
         try {
+          console.log(`⏳ Checking analysis (attempt ${attempts + 1}/${maxAttempts})...`);
           const result = await getAnalysis(fileId);
           if (result && result.analysis) {
             analysisData = result;
+            console.log('✅ Analysis complete!');
             break;
           }
         } catch (error) {
-          // Still processing
+          // Still processing, continue polling
+          console.log('⏳ Still processing...');
         }
         
         attempts++;
         setProgress(70 + (attempts / maxAttempts) * 25);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
       }
       
       if (analysisData) {
@@ -89,11 +95,11 @@ const FileUpload = () => {
         setAnalysisResult(analysisData);
         toast.success('Contract analysed successfully!');
       } else {
-        throw new Error('Analysis timed out');
+        throw new Error('Analysis timed out after 30 attempts');
       }
       
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('❌ Upload error:', error);
       setStatus('error');
       toast.error(error.message || 'Failed to upload or analyse contract');
     } finally {
@@ -103,7 +109,6 @@ const FileUpload = () => {
 
   return (
     <div className="space-y-6">
-      {/* Drop Zone */}
       <div
         {...getRootProps()}
         className={`
@@ -131,11 +136,6 @@ const FileUpload = () => {
                 or click to browse files (Max 10MB)
               </p>
             </div>
-            <div className="flex justify-center space-x-4 text-xs text-gray-400">
-              <span>📄 PDF only</span>
-              <span>🔒 Secure upload</span>
-              <span>⚡ AI-powered analysis</span>
-            </div>
           </div>
         ) : (
           <div className="flex items-center justify-between bg-white rounded-lg p-4 border border-gray-200">
@@ -162,7 +162,6 @@ const FileUpload = () => {
         )}
       </div>
 
-      {/* Upload Progress */}
       {status !== 'idle' && (
         <UploadProgress 
           status={status} 
@@ -171,7 +170,6 @@ const FileUpload = () => {
         />
       )}
 
-      {/* Action Buttons */}
       {file && status === 'idle' && (
         <div className="flex justify-end">
           <button
@@ -185,7 +183,6 @@ const FileUpload = () => {
         </div>
       )}
 
-      {/* Status Messages */}
       {status === 'complete' && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3">
           <CheckCircle className="w-5 h-5 text-green-600" />
