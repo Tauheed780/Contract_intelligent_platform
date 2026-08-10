@@ -1,0 +1,3 @@
+# In Git Bash
+cd /c/Users/TAUHEED/contract-analyser-project
+echo "# This file keeps the uploads directory in git" > backend/uploads/.gitkeep
