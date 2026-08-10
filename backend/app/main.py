@@ -1,16 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.api.routes import router
-from app.core.config import settings
-import logging
 import os
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Contract Analyzer API",
@@ -18,31 +9,21 @@ app = FastAPI(
     version="1.0.0"
 )
 
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
-
+# Configure CORS - Allow your frontend URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=[
+        "http://localhost:3000",  # Local development
+        "https://contract-intelligent-platform-933zv6o15-me-bcc4.vercel.app",  # Your Vercel URL
+        "https://*.vercel.app",  # All Vercel previews
+        "https://contract-intelligent-platform.onrender.com",  # Your backend
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["http://localhost:3000",
-#                     "https://contract-intelligent-platform.vercel.app/",  # Your actual frontend URL
-#                     "https://*.vercel.app", # Your future Vercel URL
-#                    ],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=["*"]
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
 
+# Include routes with /api/v1 prefix
 app.include_router(router, prefix="/api/v1")
 
 @app.get("/")
@@ -50,20 +31,18 @@ async def root():
     return {
         "message": "Contract Analyzer API",
         "version": "1.0.0",
-        "endpoints": {
-            "upload": "/api/v1/upload",
-            "analysis": "/api/v1/analysis/{file_id}",
-            "ask": "/api/v1/ask",
-            "qa_history": "/api/v1/qa-history",
-            "health": "/api/v1/health"
-        }
+        "status": "running"
     }
+
+@app.get("/api/v1/health")
+async def health_check():
+    return {"status": "healthy", "service": "contract-analyser"}
 
 if __name__ == "__main__":
     import uvicorn
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True
+        port=port
     )
