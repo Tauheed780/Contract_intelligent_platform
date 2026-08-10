@@ -9,21 +9,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS - THIS IS THE FIX
+# Allow all origins - FOR TESTING ONLY
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://contract-intelligent-platform.vercel.com",  # Your Vercel URL
-        "https://*.vercel.com",  # All Vercel previews
-        "http://localhost:3000",  # Local development
-    ],
+    allow_origins=["*"],  # ⚠️ Allow all origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
-    expose_headers=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Include routes with /api/v1 prefix
 app.include_router(router, prefix="/api/v1")
 
 @app.get("/")
