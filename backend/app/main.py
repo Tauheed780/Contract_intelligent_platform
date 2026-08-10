@@ -13,8 +13,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://contract-intelligent-platform.vercel.app",  # Your Vercel URL
-        "https://*.vercel.app",  # All Vercel previews
+        "https://contract-intelligent-platform.vercel.com",  # Your Vercel URL
+        "https://*.vercel.com",  # All Vercel previews
         "http://localhost:3000",  # Local development
     ],
     allow_credentials=True,
